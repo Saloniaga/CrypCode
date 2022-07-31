@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // const crypto = require("crypto");
 
 // const cryptoHash = (...inputs) => {
@@ -7,6 +8,8 @@
 // };
 // module.exports = cryptoHash;
 
+=======
+>>>>>>> ac04102a482c1fcd47bdafc832259a83823ff333
 const crypto = require("crypto");
 
 const cryptoHash = (...inputs) => {
