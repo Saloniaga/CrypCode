@@ -13,6 +13,7 @@ class Block {
   static genesis() {
     return new this(GENESIS_DATA);
   }
+
   static mineBlock({ lastBlock, data }) {
     const lastHash = lastBlock.hash;
     let hash, timestamp;
@@ -29,7 +30,6 @@ class Block {
     } while (hash.substring(0, difficulty) !== "0".repeat(difficulty));
     return new this({
       timestamp,
-      lastHash,
       data,
       difficulty,
       nonce,
