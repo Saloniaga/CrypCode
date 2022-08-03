@@ -19,18 +19,7 @@
   "devDependencies": {
     "jest": "^23.6.0"
   },
-<<<<<<< HEAD
-  "description": "",
   "dependencies": {
     "hex-to-binary": "^1.0.1"
   }
-=======
-<<<<<<< HEAD
-  "dependencies": {
-    "hex-to-binary": "^1.0.1"
-  }
-=======
-  "description": ""
->>>>>>> 221680cec55300e41c078c3ff4c2df78d0dff533
->>>>>>> f2e8b9deea535f2a24896054a0733ff0ec935aa7
 }
