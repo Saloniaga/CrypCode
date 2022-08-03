@@ -78,7 +78,6 @@ describe("Block", () => {
       expect(possibleResults.includes(minedBlock.difficulty)).toBe(true);
     });
   });
-
   describe("adjustDifficulty()", () => {
     it("raises the difficulty for a quickly mined block", () => {
       expect(
