@@ -31,9 +31,10 @@ class Block {
     return new this({
       timestamp,
       data,
+      lastHash,
       difficulty,
       nonce,
-      hash,
+      hash: cryptoHash(timestamp, lastHash, data, nonce, difficulty),
     });
   }
 
