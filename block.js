@@ -34,11 +34,13 @@ class Block {
     return new this({
       timestamp,
       data,
+      lastHash,
       difficulty,
       nonce,
-      hash,
+      hash: cryptoHash(timestamp, lastHash, data, nonce, difficulty),
     });
   }
+
   static adjustDifficulty({ originalBlock, timestamp }) {
     const { difficulty } = originalBlock;
     if (difficulty < 1) return 1;

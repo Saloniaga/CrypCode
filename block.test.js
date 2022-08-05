@@ -5,9 +5,9 @@ const cryptoHash = require("./crypto-hash");
 
 describe("Block", () => {
   const timestamp = 2000;
-  const lastHash = "foo-hash";
-  const hash = "bar-hash";
-  const data = ["blockchain", "data"];
+  const lastHash = "lasthash";
+  const hash = "hash";
+  const data = ["data1", "data2"];
   const nonce = 1;
   const difficulty = 1;
   const block = new Block({
@@ -71,11 +71,6 @@ describe("Block", () => {
         hexToBinary(minedBlock.hash).substring(0, minedBlock.difficulty)
       ).toEqual("0".repeat(minedBlock.difficulty));
     });
-    it("sets a `hash` that matches the difficulty criteria", () => {
-      expect(minedBlock.hash.substring(0, minedBlock.difficulty)).toEqual(
-        "0".repeat(minedBlock.difficulty)
-      );
-    });
     it("adjusts the difficulty", () => {
       const possibleResults = [
         lastBlock.difficulty + 1,
@@ -101,9 +96,9 @@ describe("Block", () => {
         })
       ).toEqual(block.difficulty - 1);
     });
-  });
-  it("has a lower limit of 1", () => {
-    block.difficulty = -1;
-    expect(Block.adjustDifficulty({ originalBlock: block })).toEqual(1);
+    it("has a lower limit of 1", () => {
+      block.difficulty = -1;
+      expect(Block.adjustDifficulty({ originalBlock: block })).toEqual(1);
+    });
   });
 });
