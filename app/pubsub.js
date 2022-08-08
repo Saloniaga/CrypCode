@@ -9,14 +9,11 @@ const credentials = {
 const CHANNELS = {
   TEST: "TEST",
   BLOCKCHAIN: "BLOCKCHAIN",
-  //   TRANSACTION: 'TRANSACTION'
 };
 
 class PubSub {
   constructor({ blockchain }) {
     this.blockchain = blockchain;
-    // this.transactionPool = transactionPool;
-    // this.wallet = wallet;
 
     this.pubnub = new PubNub(credentials);
 
@@ -36,21 +33,9 @@ class PubSub {
 
         switch (channel) {
           case CHANNELS.BLOCKCHAIN:
-            this.blockchain.replaceChain(parsedMessage, true, () => {
-              //   this.transactionPool.clearBlockchainTransactions({
-              //     chain: parsedMessage.chain,
-              //   });
-            });
+            this.blockchain.replaceChain(parsedMessage, true, () => {});
             break;
-          //   case CHANNELS.TRANSACTION:
-          //     if (
-          //       !this.transactionPool.existingTransaction({
-          //         inputAddress: this.wallet.publicKey,
-          //       })
-          //     ) {
-          //       this.transactionPool.setTransaction(parsedMessage);
-          //     }
-          //     break;
+
           default:
             return;
         }
@@ -64,16 +49,7 @@ class PubSub {
     });
   }
 
-  //   subscribeToChannels() {
-  //     this.pubnub.subscribe({
-  //       channels: [Object.values(CHANNELS)],
-  //     });
-  //   }
-
   publish({ channel, message }) {
-    // there is an unsubscribe function in pubnub
-    // but it doesn't have a callback that fires after success
-    // therefore, redundant publishes to the same local subscriber will be accepted as noisy no-ops
     this.pubnub.publish({ message, channel });
   }
   broadcastChain() {
