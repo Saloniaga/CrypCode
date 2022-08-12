@@ -4,7 +4,6 @@ const { verifySignature } = require("../util");
 
 describe("Wallet", () => {
   let wallet;
-
   beforeEach(() => {
     wallet = new Wallet();
   });
@@ -12,14 +11,11 @@ describe("Wallet", () => {
   it("has a `balance`", () => {
     expect(wallet).toHaveProperty("balance");
   });
-
-  it("has a `publicKey`", () => {
+  it("has a  `publicKey`", () => {
     expect(wallet).toHaveProperty("publicKey");
   });
-
   describe("signing data", () => {
-    const data = "dummybar";
-
+    const data = "foobar";
     it("verifies a signature", () => {
       expect(
         verifySignature({
@@ -29,7 +25,6 @@ describe("Wallet", () => {
         })
       ).toBe(true);
     });
-
     it("does not verify an invalid signature", () => {
       expect(
         verifySignature({
@@ -40,36 +35,31 @@ describe("Wallet", () => {
       ).toBe(false);
     });
   });
-
   describe("createTransaction()", () => {
     describe("and the amount exceeds the balance", () => {
       it("throws an error", () => {
         expect(() =>
           wallet.createTransaction({
-            amount: 999999,
-            recipient: "dummy-recipient",
+            amount: 9999999,
+            recipient: "foo-recipient",
           })
         ).toThrow("Amount exceeds balance");
       });
     });
     describe("and the amount is valid", () => {
       let transaction, amount, recipient;
-
       beforeEach(() => {
         amount = 50;
-        recipient = "dummy-recipient";
+        recipient = "foo-recipient";
         transaction = wallet.createTransaction({ amount, recipient });
       });
-
       it("creates an instance of `Transaction`", () => {
         expect(transaction instanceof Transaction).toBe(true);
       });
-
       it("matches the transaction input with the wallet", () => {
         expect(transaction.input.address).toEqual(wallet.publicKey);
       });
-
-      it("outputs the amount the recipient", () => {
+      it("outputs the amount to recipient", () => {
         expect(transaction.outputMap[recipient]).toEqual(amount);
       });
     });
