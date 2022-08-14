@@ -57,8 +57,7 @@ app.post("/api/transact", (req, res) => {
   }
 
   transactionPool.setTransaction(transaction);
-  // console.log("transactionPool", transactionPool);
-  pubsub.broadcastTransaction(transaction);
+  pubsub.boradcastTransaction(transaction);
 
   res.json({ type: "success", transaction });
 });
@@ -107,6 +106,7 @@ const syncWithRootState = () => {
       }
     }
   );
+
   request(
     { url: `${ROOT_NODE_ADDRESS}/api/transaction-pool-map` },
     (error, response, body) => {

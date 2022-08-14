@@ -10,14 +10,13 @@ class Transaction {
     this.input =
       input || this.createInput({ senderWallet, outputMap: this.outputMap });
   }
+
   createOutputMap({ senderWallet, recipient, amount }) {
     const outputMap = {};
     outputMap[recipient] = amount;
     outputMap[senderWallet.publicKey] = senderWallet.balance - amount;
-
     return outputMap;
   }
-
   createInput({ senderWallet, outputMap }) {
     return {
       timestamp: Date.now(),
@@ -26,6 +25,7 @@ class Transaction {
       signature: senderWallet.sign(outputMap),
     };
   }
+
   update({ senderWallet, recipient, amount }) {
     if (amount > this.outputMap[senderWallet.publicKey]) {
       throw new Error("Amount exceeds balance");
@@ -65,6 +65,7 @@ class Transaction {
 
     return true;
   }
+
   static rewardTransaction({ minerWallet }) {
     return new this({
       input: REWARD_INPUT,
@@ -72,4 +73,5 @@ class Transaction {
     });
   }
 }
+
 module.exports = Transaction;

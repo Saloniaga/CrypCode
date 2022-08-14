@@ -10,6 +10,7 @@ describe("Transaction", () => {
     senderWallet = new Wallet();
     recipient = "recipient-public-key";
     amount = 50;
+
     transaction = new Transaction({ senderWallet, recipient, amount });
   });
 

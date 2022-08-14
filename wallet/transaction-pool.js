@@ -8,6 +8,7 @@ class TransactionPool {
   clear() {
     this.transactionMap = {};
   }
+
   setTransaction(transaction) {
     this.transactionMap[transaction.id] = transaction;
   }
@@ -41,5 +42,6 @@ class TransactionPool {
     }
   }
 }
+
 
 module.exports = TransactionPool;
