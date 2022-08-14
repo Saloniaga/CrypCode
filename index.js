@@ -39,24 +39,21 @@ app.post("/api/transact", (req, res) => {
     if (transaction) {
       transaction.update({ senderWallet: wallet, recipient, amount });
     } else {
-      transaction = wallet.createTransaction({
-        recipient,
-        amount,
-        // chain: blockchain.chain
-      });
+      transaction = wallet.createTransaction({ recipient, amount });
     }
   } catch (error) {
     return res.status(400).json({ type: "error", message: error.message });
   }
 
   transactionPool.setTransaction(transaction);
-  // console.log("transactionPool", transactionPool);
-  pubsub.broadcastTransaction(transaction);
+  pubsub.boradcastTransaction(transaction);
+
 
   res.json({ type: "success", transaction });
 });
 
-app.get("api/transaction-pool-map", (req, res) => {
+
+app.get("/api/transaction-pool-map", (req, res) => {
   res.json(transactionPool.transactionMap);
 });
 
@@ -71,6 +68,7 @@ const syncWithRootState = () => {
       }
     }
   );
+
   request(
     { url: `${ROOT_NODE_ADDRESS}/api/transaction-pool-map` },
     (error, response, body) => {
