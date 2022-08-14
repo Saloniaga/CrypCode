@@ -30,9 +30,11 @@ app.post("/api/mine", (req, res) => {
 
 app.post("/api/transact", (req, res) => {
   const { amount, recipient } = req.body;
+
   let transaction = transactionPool.existingTransaction({
     inputAddress: wallet.publicKey,
   });
+
   try {
     if (transaction) {
       transaction.update({ senderWallet: wallet, recipient, amount });
@@ -44,11 +46,12 @@ app.post("/api/transact", (req, res) => {
   }
 
   transactionPool.setTransaction(transaction);
-
   pubsub.boradcastTransaction(transaction);
+
 
   res.json({ type: "success", transaction });
 });
+
 
 app.get("/api/transaction-pool-map", (req, res) => {
   res.json(transactionPool.transactionMap);

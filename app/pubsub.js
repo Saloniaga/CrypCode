@@ -15,14 +15,17 @@ const CHANNELS = {
 class PubSub {
   constructor({ blockchain, transactionPool, wallet }) {
     this.blockchain = blockchain;
-    this.wallet = wallet;
+
     this.transactionPool = transactionPool;
+    this.wallet = wallet;
+
     this.pubnub = new PubNub(credentials);
 
     this.pubnub.subscribe({ channels: Object.values(CHANNELS) });
 
     this.pubnub.addListener(this.listener());
   }
+
   listener() {
     return {
       message: (messageObject) => {
@@ -50,6 +53,17 @@ class PubSub {
               this.transactionPool.setTransaction(parsedMessage);
             }
             break;
+
+          case CHANNELS.TRANSACTION:
+            if (
+              !this.transactionPool.existingTransaction({
+                inputAddress: this.wallet.publicKey,
+              })
+            ) {
+              this.transactionPool.setTransaction(parsedMessage);
+            }
+            break;
+
           default:
             return;
         }
@@ -67,7 +81,9 @@ class PubSub {
       message: JSON.stringify(this.blockchain.chain),
     });
   }
-  boradcastTransaction(transaction) {
+
+  broadcastTransaction(transaction) {
+
     this.publish({
       channel: CHANNELS.TRANSACTION,
       message: JSON.stringify(transaction),
