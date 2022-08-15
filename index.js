@@ -1,6 +1,6 @@
 const express = require("express");
-const request = require("request");
 const bodyParser = require("body-parser");
+const request = require("request");
 const BlockChain = require("./blockchain");
 const PubSub = require("./app/pubsub");
 const TransactionPool = require("./wallet/transaction-pool");
@@ -31,28 +31,32 @@ app.get("/api/blocks", (req, res) => {
 app.post("/api/mine", (req, res) => {
   const { data } = req.body;
   blockchain.addBlock({ data });
-
   pubsub.broadcastChain();
   res.redirect("/api/blocks");
 });
 
 app.post("/api/transact", (req, res) => {
   const { amount, recipient } = req.body;
+
   let transaction = transactionPool.existingTransaction({
     inputAddress: wallet.publicKey,
   });
+
   try {
     if (transaction) {
       transaction.update({ senderWallet: wallet, recipient, amount });
     } else {
-      transaction = wallet.createTransaction({ recipient, amount });
+      transaction = wallet.createTransaction({
+        recipient,
+        amount,
+        chain: blockchain.chain,
+      });
     }
   } catch (error) {
     return res.status(400).json({ type: "error", message: error.message });
   }
 
   transactionPool.setTransaction(transaction);
-
   pubsub.boradcastTransaction(transaction);
 
   res.json({ type: "success", transaction });
@@ -63,9 +67,33 @@ app.get("/api/transaction-pool-map", (req, res) => {
 });
 
 app.get("/api/mine-transactions", (req, res) => {
-  transactionMiner.mineTransaction();
+  transactionMiner.mineTransactions();
+
   res.redirect("/api/blocks");
 });
+
+app.get("/api/wallet-info", (req, res) => {
+  const address = wallet.publicKey;
+
+  res.json({
+    address,
+    balance: Wallet.calculateBalance({ chain: blockchain.chain, address }),
+  });
+});
+
+// app.get("/api/known-addresses", (req, res) => {
+//   const addressMap = {};
+
+//   for (let block of blockchain.chain) {
+//     for (let transaction of block.data) {
+//       const recipient = Object.keys(transaction.outputMap);
+
+//       recipient.forEach((recipient) => (addressMap[recipient] = recipient));
+//     }
+//   }
+
+//   res.json(Object.keys(addressMap));
+// });
 
 const syncWithRootState = () => {
   request(
@@ -73,8 +101,7 @@ const syncWithRootState = () => {
     (error, response, body) => {
       if (!error && response.statusCode === 200) {
         const rootChain = JSON.parse(body);
-
-        console.log("replace chain on a sync with", rootChain);
+        console.log("replace chain on a sync with ", rootChain);
         blockchain.replaceChain(rootChain);
       }
     }

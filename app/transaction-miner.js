@@ -7,7 +7,7 @@ class TransactionMiner {
     this.wallet = wallet;
     this.pubsub = pubsub;
   }
-  mineTransaction() {
+  mineTransactions() {
     const validTransactions = this.transactionPool.validTransactions();
 
     validTransactions.push(

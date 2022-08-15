@@ -13,7 +13,6 @@ class Transaction {
 
   createOutputMap({ senderWallet, recipient, amount }) {
     const outputMap = {};
-
     outputMap[recipient] = amount;
     outputMap[senderWallet.publicKey] = senderWallet.balance - amount;
     return outputMap;
@@ -26,6 +25,24 @@ class Transaction {
       signature: senderWallet.sign(outputMap),
     };
   }
+
+  update({ senderWallet, recipient, amount }) {
+    if (amount > this.outputMap[senderWallet.publicKey]) {
+      throw new Error("Amount exceeds balance");
+    }
+
+    if (!this.outputMap[recipient]) {
+      this.outputMap[recipient] = amount;
+    } else {
+      this.outputMap[recipient] = this.outputMap[recipient] + amount;
+    }
+
+    this.outputMap[senderWallet.publicKey] =
+      this.outputMap[senderWallet.publicKey] - amount;
+
+    this.input = this.createInput({ senderWallet, outputMap: this.outputMap });
+  }
+
   static validTransaction(transaction) {
     const {
       input: { address, amount, signature },
@@ -48,27 +65,12 @@ class Transaction {
 
     return true;
   }
+
   static rewardTransaction({ minerWallet }) {
     return new this({
       input: REWARD_INPUT,
       outputMap: { [minerWallet.publicKey]: MINING_REWARD },
     });
-  }
-  update({ senderWallet, recipient, amount }) {
-    if (amount > this.outputMap[senderWallet.publicKey]) {
-      throw new Error("Amount exceeds balance");
-    }
-
-    if (!this.outputMap[recipient]) {
-      this.outputMap[recipient] = amount;
-    } else {
-      this.outputMap[recipient] = this.outputMap[recipient] + amount;
-    }
-
-    this.outputMap[senderWallet.publicKey] =
-      this.outputMap[senderWallet.publicKey] - amount;
-
-    this.input = this.createInput({ senderWallet, outputMap: this.outputMap });
   }
 }
 

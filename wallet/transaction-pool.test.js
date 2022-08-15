@@ -35,8 +35,10 @@ describe("TransactionPool", () => {
       ).toBe(transaction);
     });
   });
+
   describe("validTransactions()", () => {
     let validTransactions, errorMock;
+
     beforeEach(() => {
       validTransactions = [];
       errorMock = jest.fn();
@@ -48,30 +50,37 @@ describe("TransactionPool", () => {
           recipient: "any-recipient",
           amount: 30,
         });
+
         if (i % 3 === 0) {
-          transaction.input.amount = 9999999;
+          transaction.input.amount = 999999;
         } else if (i % 3 === 1) {
-          transaction.input.signature = new Wallet().sign("foo");
+          transaction.input.signature = new Wallet().sign("dummy");
         } else {
           validTransactions.push(transaction);
         }
+
         transactionPool.setTransaction(transaction);
       }
     });
-    it("return valid transactions", () => {
+
+    it("returns valid transaction", () => {
       expect(transactionPool.validTransactions()).toEqual(validTransactions);
     });
+
     it("logs errors for the invalid transactions", () => {
       transactionPool.validTransactions();
       expect(errorMock).toHaveBeenCalled();
     });
   });
+
   describe("clear()", () => {
     it("clears the transactions", () => {
       transactionPool.clear();
+
       expect(transactionPool.transactionMap).toEqual({});
     });
   });
+
   describe("clearBlockchainTransactions()", () => {
     it("clears the pool of any existing blockchain transactions", () => {
       const blockchain = new Blockchain();
@@ -82,6 +91,7 @@ describe("TransactionPool", () => {
           recipient: "foo",
           amount: 20,
         });
+
         transactionPool.setTransaction(transaction);
 
         if (i % 2 === 0) {
