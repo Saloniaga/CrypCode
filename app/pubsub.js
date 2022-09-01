@@ -38,7 +38,7 @@ class PubSub {
 
         switch (channel) {
           case CHANNELS.BLOCKCHAIN:
-            this.blockchain.replaceChain(parsedMessage, true, () => {
+            this.blockchain.replaceChain(parsedMessage, () => {
               this.transactionPool.clearBlockchainTransactions({
                 chain: parsedMessage,
               });
@@ -72,7 +72,17 @@ class PubSub {
   }
 
   publish({ channel, message }) {
-    this.pubnub.publish({ channel, message });
+    this.pubnub
+
+      .publish({ channel, message })
+
+      .then((result) => {
+        console.log(`Channel: ${channel}, Message: ${message}.`);
+      })
+
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   broadcastChain() {

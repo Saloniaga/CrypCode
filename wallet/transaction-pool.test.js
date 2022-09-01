@@ -106,5 +106,4 @@ describe("TransactionPool", () => {
       expect(transactionPool.transactionMap).toEqual(expectedTransactionMap);
     });
   });
-
 });
