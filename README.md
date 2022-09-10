@@ -24,7 +24,7 @@ We have followed the approach of Test Driven Development through out the project
 - Developed the cryptographic key-pair (public & private) to create Wallet class.
 - Created Transaction Pool class to enable transactions in the network.
 
-## Run Locally or Visit https://crypcode.herokuapp.com/
+## Run Locally
 
 Clone the project
 
